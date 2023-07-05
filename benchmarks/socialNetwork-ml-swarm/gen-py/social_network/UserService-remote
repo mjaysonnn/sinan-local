@@ -21,7 +21,9 @@ from social_network.ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('')
-    print('Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] [-novalidate] [-ca_certs certs] [-keyfile keyfile] [-certfile certfile] function [arg1 [arg2...]]')
+    print(
+        f'Usage: {sys.argv[0]} [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] [-novalidate] [-ca_certs certs] [-keyfile keyfile] [-certfile certfile] function [arg1 [arg2...]]'
+    )
     print('')
     print('Functions:')
     print('  void RegisterUser(i64 req_id, string first_name, string last_name, string username, string password,  carrier)')
@@ -57,21 +59,18 @@ if sys.argv[argi] == '-u':
     url = urlparse(sys.argv[argi + 1])
     parts = url[1].split(':')
     host = parts[0]
-    if len(parts) > 1:
-        port = int(parts[1])
-    else:
-        port = 80
+    port = int(parts[1]) if len(parts) > 1 else 80
     uri = url[2]
     if url[4]:
-        uri += '?%s' % url[4]
+        uri += f'?{url[4]}'
     http = True
     argi += 2
 
-if sys.argv[argi] == '-f' or sys.argv[argi] == '-framed':
+if sys.argv[argi] in ['-f', '-framed']:
     framed = True
     argi += 1
 
-if sys.argv[argi] == '-s' or sys.argv[argi] == '-ssl':
+if sys.argv[argi] in ['-s', '-ssl']:
     ssl = True
     argi += 1
 
@@ -109,7 +108,19 @@ protocol = TBinaryProtocol(transport)
 client = UserService.Client(protocol)
 transport.open()
 
-if cmd == 'RegisterUser':
+if cmd == 'GetUserId':
+    if len(args) != 3:
+        print('GetUserId requires 3 args')
+        sys.exit(1)
+    pp.pprint(client.GetUserId(eval(args[0]), args[1], eval(args[2]),))
+
+elif cmd == 'Login':
+    if len(args) != 4:
+        print('Login requires 4 args')
+        sys.exit(1)
+    pp.pprint(client.Login(eval(args[0]), args[1], args[2], eval(args[3]),))
+
+elif cmd == 'RegisterUser':
     if len(args) != 6:
         print('RegisterUser requires 6 args')
         sys.exit(1)
@@ -120,12 +131,6 @@ elif cmd == 'RegisterUserWithId':
         print('RegisterUserWithId requires 7 args')
         sys.exit(1)
     pp.pprint(client.RegisterUserWithId(eval(args[0]), args[1], args[2], args[3], args[4], eval(args[5]), eval(args[6]),))
-
-elif cmd == 'Login':
-    if len(args) != 4:
-        print('Login requires 4 args')
-        sys.exit(1)
-    pp.pprint(client.Login(eval(args[0]), args[1], args[2], eval(args[3]),))
 
 elif cmd == 'UploadCreatorWithUserId':
     if len(args) != 4:
@@ -139,14 +144,8 @@ elif cmd == 'UploadCreatorWithUsername':
         sys.exit(1)
     pp.pprint(client.UploadCreatorWithUsername(eval(args[0]), args[1], eval(args[2]),))
 
-elif cmd == 'GetUserId':
-    if len(args) != 3:
-        print('GetUserId requires 3 args')
-        sys.exit(1)
-    pp.pprint(client.GetUserId(eval(args[0]), args[1], eval(args[2]),))
-
 else:
-    print('Unrecognized method %s' % cmd)
+    print(f'Unrecognized method {cmd}')
     sys.exit(1)
 
 transport.close()

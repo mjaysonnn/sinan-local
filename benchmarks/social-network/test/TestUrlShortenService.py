@@ -28,4 +28,4 @@ if __name__ == '__main__':
   try:
     main()
   except Thrift.TException as tx:
-    print('%s' % tx.message)
+    print(f'{tx.message}')

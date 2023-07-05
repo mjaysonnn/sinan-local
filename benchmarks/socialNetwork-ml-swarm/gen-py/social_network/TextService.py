@@ -77,15 +77,16 @@ class Client(Iface):
 class Processor(Iface, TProcessor):
     def __init__(self, handler):
         self._handler = handler
-        self._processMap = {}
-        self._processMap["UploadText"] = Processor.process_UploadText
+        self._processMap = {"UploadText": Processor.process_UploadText}
 
     def process(self, iprot, oprot):
         (name, type, seqid) = iprot.readMessageBegin()
         if name not in self._processMap:
             iprot.skip(TType.STRUCT)
             iprot.readMessageEnd()
-            x = TApplicationException(TApplicationException.UNKNOWN_METHOD, 'Unknown function %s' % (name))
+            x = TApplicationException(
+                TApplicationException.UNKNOWN_METHOD, f'Unknown function {name}'
+            )
             oprot.writeMessageBegin(name, TMessageType.EXCEPTION, seqid)
             x.write(oprot)
             oprot.writeMessageEnd()
@@ -204,7 +205,7 @@ class UploadText_args(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -240,12 +241,9 @@ class UploadText_result(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.STRUCT:
-                    self.se = ServiceException()
-                    self.se.read(iprot)
-                else:
-                    iprot.skip(ftype)
+            if fid == 1 and ftype == TType.STRUCT:
+                self.se = ServiceException()
+                self.se.read(iprot)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -269,7 +267,7 @@ class UploadText_result(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__

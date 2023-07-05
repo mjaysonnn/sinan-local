@@ -21,7 +21,9 @@ from social_network.ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('')
-    print('Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] [-novalidate] [-ca_certs certs] [-keyfile keyfile] [-certfile certfile] function [arg1 [arg2...]]')
+    print(
+        f'Usage: {sys.argv[0]} [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] [-novalidate] [-ca_certs certs] [-keyfile keyfile] [-certfile certfile] function [arg1 [arg2...]]'
+    )
     print('')
     print('Functions:')
     print('  void UploadText(i64 req_id, string text,  carrier)')
@@ -57,21 +59,18 @@ if sys.argv[argi] == '-u':
     url = urlparse(sys.argv[argi + 1])
     parts = url[1].split(':')
     host = parts[0]
-    if len(parts) > 1:
-        port = int(parts[1])
-    else:
-        port = 80
+    port = int(parts[1]) if len(parts) > 1 else 80
     uri = url[2]
     if url[4]:
-        uri += '?%s' % url[4]
+        uri += f'?{url[4]}'
     http = True
     argi += 2
 
-if sys.argv[argi] == '-f' or sys.argv[argi] == '-framed':
+if sys.argv[argi] in ['-f', '-framed']:
     framed = True
     argi += 1
 
-if sys.argv[argi] == '-s' or sys.argv[argi] == '-ssl':
+if sys.argv[argi] in ['-s', '-ssl']:
     ssl = True
     argi += 1
 
@@ -109,11 +108,11 @@ protocol = TBinaryProtocol(transport)
 client = ComposePostService.Client(protocol)
 transport.open()
 
-if cmd == 'UploadText':
+if cmd == 'UploadCreator':
     if len(args) != 3:
-        print('UploadText requires 3 args')
+        print('UploadCreator requires 3 args')
         sys.exit(1)
-    pp.pprint(client.UploadText(eval(args[0]), args[1], eval(args[2]),))
+    pp.pprint(client.UploadCreator(eval(args[0]), eval(args[1]), eval(args[2]),))
 
 elif cmd == 'UploadMedia':
     if len(args) != 3:
@@ -121,17 +120,17 @@ elif cmd == 'UploadMedia':
         sys.exit(1)
     pp.pprint(client.UploadMedia(eval(args[0]), eval(args[1]), eval(args[2]),))
 
+elif cmd == 'UploadText':
+    if len(args) != 3:
+        print('UploadText requires 3 args')
+        sys.exit(1)
+    pp.pprint(client.UploadText(eval(args[0]), args[1], eval(args[2]),))
+
 elif cmd == 'UploadUniqueId':
     if len(args) != 4:
         print('UploadUniqueId requires 4 args')
         sys.exit(1)
     pp.pprint(client.UploadUniqueId(eval(args[0]), eval(args[1]), eval(args[2]), eval(args[3]),))
-
-elif cmd == 'UploadCreator':
-    if len(args) != 3:
-        print('UploadCreator requires 3 args')
-        sys.exit(1)
-    pp.pprint(client.UploadCreator(eval(args[0]), eval(args[1]), eval(args[2]),))
 
 elif cmd == 'UploadUrls':
     if len(args) != 3:
@@ -146,7 +145,7 @@ elif cmd == 'UploadUserMentions':
     pp.pprint(client.UploadUserMentions(eval(args[0]), eval(args[1]), eval(args[2]),))
 
 else:
-    print('Unrecognized method %s' % cmd)
+    print(f'Unrecognized method {cmd}')
     sys.exit(1)
 
 transport.close()
