@@ -173,7 +173,7 @@ class User(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -204,18 +204,12 @@ class ServiceException(TException):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.I32:
-                    self.errorCode = iprot.readI32()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.STRING:
-                    self.message = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                else:
-                    iprot.skip(ftype)
-            else:
+            if fid == 1 and ftype == TType.I32:
+                self.errorCode = iprot.readI32()
+            elif fid == 1 or fid == 2 and ftype != TType.STRING or fid != 2:
                 iprot.skip(ftype)
+            else:
+                self.message = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -244,7 +238,7 @@ class ServiceException(TException):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -275,18 +269,12 @@ class Media(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.I64:
-                    self.media_id = iprot.readI64()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.STRING:
-                    self.media_type = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                else:
-                    iprot.skip(ftype)
-            else:
+            if fid == 1 and ftype == TType.I64:
+                self.media_id = iprot.readI64()
+            elif fid == 1 or fid == 2 and ftype != TType.STRING or fid != 2:
                 iprot.skip(ftype)
+            else:
+                self.media_type = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -312,7 +300,7 @@ class Media(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -343,18 +331,12 @@ class Url(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.shortened_url = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.STRING:
-                    self.expanded_url = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                else:
-                    iprot.skip(ftype)
-            else:
+            if fid == 1 and ftype == TType.STRING:
+                self.shortened_url = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+            elif fid == 1 or fid == 2 and ftype != TType.STRING or fid != 2:
                 iprot.skip(ftype)
+            else:
+                self.expanded_url = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -380,7 +362,7 @@ class Url(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -411,18 +393,12 @@ class UserMention(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.I64:
-                    self.user_id = iprot.readI64()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.STRING:
-                    self.username = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                else:
-                    iprot.skip(ftype)
-            else:
+            if fid == 1 and ftype == TType.I64:
+                self.user_id = iprot.readI64()
+            elif fid == 1 or fid == 2 and ftype != TType.STRING or fid != 2:
                 iprot.skip(ftype)
+            else:
+                self.username = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -448,7 +424,7 @@ class UserMention(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -479,18 +455,12 @@ class Creator(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.I64:
-                    self.user_id = iprot.readI64()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.STRING:
-                    self.username = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                else:
-                    iprot.skip(ftype)
-            else:
+            if fid == 1 and ftype == TType.I64:
+                self.user_id = iprot.readI64()
+            elif fid == 1 or fid == 2 and ftype != TType.STRING or fid != 2:
                 iprot.skip(ftype)
+            else:
+                self.username = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -516,7 +486,7 @@ class Creator(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -689,7 +659,7 @@ class Post(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__

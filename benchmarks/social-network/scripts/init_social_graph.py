@@ -3,14 +3,22 @@ import asyncio
 import sys
 
 async def upload_follow(session, addr, user_0, user_1):
-  payload = {'user_name': 'username_' + user_0, 'followee_name': 'username_' + user_1}
-  async with session.post(addr + "/wrk2-api/user/follow", data=payload) as resp:
+  payload = {
+      'user_name': f'username_{user_0}',
+      'followee_name': f'username_{user_1}',
+  }
+  async with session.post(f"{addr}/wrk2-api/user/follow", data=payload) as resp:
     return await resp.text()
 
 async def upload_register(session, addr, user):
-  payload = {'first_name': 'first_name_' + user, 'last_name': 'last_name_' + user,
-             'username': 'username_' + user, 'password': 'password_' + user, 'user_id': user}
-  async with session.post(addr + "/wrk2-api/user/register", data=payload) as resp:
+  payload = {
+      'first_name': f'first_name_{user}',
+      'last_name': f'last_name_{user}',
+      'username': f'username_{user}',
+      'password': f'password_{user}',
+      'user_id': user,
+  }
+  async with session.post(f"{addr}/wrk2-api/user/register", data=payload) as resp:
     return await resp.text()
 
 
@@ -20,11 +28,8 @@ def getNodes(file):
   return int(word)
 
 def getEdges(file):
-  edges = []
   lines = file.readlines()
-  for line in lines:
-    edges.append(line.split())
-  return edges
+  return [line.split() for line in lines]
 
 async def register(addr, nodes):
   idx = 0

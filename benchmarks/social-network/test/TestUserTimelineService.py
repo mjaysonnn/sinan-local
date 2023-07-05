@@ -28,6 +28,6 @@ if __name__ == '__main__':
   try:
     main()
   except ServiceException as se:
-    print('%s' % se.message)
+    print(f'{se.message}')
   except Thrift.TException as tx:
-    print('%s' % tx.message)
+    print(f'{tx.message}')

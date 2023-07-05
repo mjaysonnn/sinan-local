@@ -369,21 +369,24 @@ class Client(Iface):
 class Processor(Iface, TProcessor):
     def __init__(self, handler):
         self._handler = handler
-        self._processMap = {}
-        self._processMap["GetFollowers"] = Processor.process_GetFollowers
-        self._processMap["GetFollowees"] = Processor.process_GetFollowees
-        self._processMap["Follow"] = Processor.process_Follow
-        self._processMap["Unfollow"] = Processor.process_Unfollow
-        self._processMap["FollowWithUsername"] = Processor.process_FollowWithUsername
-        self._processMap["UnfollowWithUsername"] = Processor.process_UnfollowWithUsername
-        self._processMap["InsertUser"] = Processor.process_InsertUser
+        self._processMap = {
+            "GetFollowers": Processor.process_GetFollowers,
+            "GetFollowees": Processor.process_GetFollowees,
+            "Follow": Processor.process_Follow,
+            "Unfollow": Processor.process_Unfollow,
+            "FollowWithUsername": Processor.process_FollowWithUsername,
+            "UnfollowWithUsername": Processor.process_UnfollowWithUsername,
+            "InsertUser": Processor.process_InsertUser,
+        }
 
     def process(self, iprot, oprot):
         (name, type, seqid) = iprot.readMessageBegin()
         if name not in self._processMap:
             iprot.skip(TType.STRUCT)
             iprot.readMessageEnd()
-            x = TApplicationException(TApplicationException.UNKNOWN_METHOD, 'Unknown function %s' % (name))
+            x = TApplicationException(
+                TApplicationException.UNKNOWN_METHOD, f'Unknown function {name}'
+            )
             oprot.writeMessageBegin(name, TMessageType.EXCEPTION, seqid)
             x.write(oprot)
             oprot.writeMessageEnd()
@@ -658,7 +661,7 @@ class GetFollowers_args(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -696,24 +699,18 @@ class GetFollowers_result(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 0:
-                if ftype == TType.LIST:
-                    self.success = []
-                    (_etype262, _size259) = iprot.readListBegin()
-                    for _i263 in range(_size259):
-                        _elem264 = iprot.readI64()
-                        self.success.append(_elem264)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 1:
-                if ftype == TType.STRUCT:
-                    self.se = ServiceException()
-                    self.se.read(iprot)
-                else:
-                    iprot.skip(ftype)
-            else:
+            if fid == 0 and ftype == TType.LIST:
+                self.success = []
+                (_etype262, _size259) = iprot.readListBegin()
+                for _i263 in range(_size259):
+                    _elem264 = iprot.readI64()
+                    self.success.append(_elem264)
+                iprot.readListEnd()
+            elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
                 iprot.skip(ftype)
+            else:
+                self.se = ServiceException()
+                self.se.read(iprot)
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -742,7 +739,7 @@ class GetFollowers_result(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -836,7 +833,7 @@ class GetFollowees_args(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -874,24 +871,18 @@ class GetFollowees_result(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 0:
-                if ftype == TType.LIST:
-                    self.success = []
-                    (_etype278, _size275) = iprot.readListBegin()
-                    for _i279 in range(_size275):
-                        _elem280 = iprot.readI64()
-                        self.success.append(_elem280)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 1:
-                if ftype == TType.STRUCT:
-                    self.se = ServiceException()
-                    self.se.read(iprot)
-                else:
-                    iprot.skip(ftype)
-            else:
+            if fid == 0 and ftype == TType.LIST:
+                self.success = []
+                (_etype278, _size275) = iprot.readListBegin()
+                for _i279 in range(_size275):
+                    _elem280 = iprot.readI64()
+                    self.success.append(_elem280)
+                iprot.readListEnd()
+            elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
                 iprot.skip(ftype)
+            else:
+                self.se = ServiceException()
+                self.se.read(iprot)
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -920,7 +911,7 @@ class GetFollowees_result(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -1025,7 +1016,7 @@ class Follow_args(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -1062,12 +1053,9 @@ class Follow_result(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.STRUCT:
-                    self.se = ServiceException()
-                    self.se.read(iprot)
-                else:
-                    iprot.skip(ftype)
+            if fid == 1 and ftype == TType.STRUCT:
+                self.se = ServiceException()
+                self.se.read(iprot)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -1091,7 +1079,7 @@ class Follow_result(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -1196,7 +1184,7 @@ class Unfollow_args(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -1233,12 +1221,9 @@ class Unfollow_result(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.STRUCT:
-                    self.se = ServiceException()
-                    self.se.read(iprot)
-                else:
-                    iprot.skip(ftype)
+            if fid == 1 and ftype == TType.STRUCT:
+                self.se = ServiceException()
+                self.se.read(iprot)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -1262,7 +1247,7 @@ class Unfollow_result(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -1367,7 +1352,7 @@ class FollowWithUsername_args(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -1404,12 +1389,9 @@ class FollowWithUsername_result(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.STRUCT:
-                    self.se = ServiceException()
-                    self.se.read(iprot)
-                else:
-                    iprot.skip(ftype)
+            if fid == 1 and ftype == TType.STRUCT:
+                self.se = ServiceException()
+                self.se.read(iprot)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -1433,7 +1415,7 @@ class FollowWithUsername_result(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -1538,7 +1520,7 @@ class UnfollowWithUsername_args(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -1575,12 +1557,9 @@ class UnfollowWithUsername_result(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.STRUCT:
-                    self.se = ServiceException()
-                    self.se.read(iprot)
-                else:
-                    iprot.skip(ftype)
+            if fid == 1 and ftype == TType.STRUCT:
+                self.se = ServiceException()
+                self.se.read(iprot)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -1604,7 +1583,7 @@ class UnfollowWithUsername_result(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -1698,7 +1677,7 @@ class InsertUser_args(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -1734,12 +1713,9 @@ class InsertUser_result(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.STRUCT:
-                    self.se = ServiceException()
-                    self.se.read(iprot)
-                else:
-                    iprot.skip(ftype)
+            if fid == 1 and ftype == TType.STRUCT:
+                self.se = ServiceException()
+                self.se.read(iprot)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -1763,7 +1739,7 @@ class InsertUser_result(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
