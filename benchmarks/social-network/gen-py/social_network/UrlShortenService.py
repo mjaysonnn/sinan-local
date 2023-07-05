@@ -127,16 +127,19 @@ class Client(Iface):
 class Processor(Iface, TProcessor):
     def __init__(self, handler):
         self._handler = handler
-        self._processMap = {}
-        self._processMap["UploadUrls"] = Processor.process_UploadUrls
-        self._processMap["GetExtendedUrls"] = Processor.process_GetExtendedUrls
+        self._processMap = {
+            "UploadUrls": Processor.process_UploadUrls,
+            "GetExtendedUrls": Processor.process_GetExtendedUrls,
+        }
 
     def process(self, iprot, oprot):
         (name, type, seqid) = iprot.readMessageBegin()
         if name not in self._processMap:
             iprot.skip(TType.STRUCT)
             iprot.readMessageEnd()
-            x = TApplicationException(TApplicationException.UNKNOWN_METHOD, 'Unknown function %s' % (name))
+            x = TApplicationException(
+                TApplicationException.UNKNOWN_METHOD, f'Unknown function {name}'
+            )
             oprot.writeMessageBegin(name, TMessageType.EXCEPTION, seqid)
             x.write(oprot)
             oprot.writeMessageEnd()
@@ -289,7 +292,7 @@ class UploadUrls_args(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -327,24 +330,18 @@ class UploadUrls_result(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 0:
-                if ftype == TType.LIST:
-                    self.success = []
-                    (_etype362, _size359) = iprot.readListBegin()
-                    for _i363 in range(_size359):
-                        _elem364 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                        self.success.append(_elem364)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 1:
-                if ftype == TType.STRUCT:
-                    self.se = ServiceException()
-                    self.se.read(iprot)
-                else:
-                    iprot.skip(ftype)
-            else:
+            if fid == 0 and ftype == TType.LIST:
+                self.success = []
+                (_etype362, _size359) = iprot.readListBegin()
+                for _i363 in range(_size359):
+                    _elem364 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                    self.success.append(_elem364)
+                iprot.readListEnd()
+            elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
                 iprot.skip(ftype)
+            else:
+                self.se = ServiceException()
+                self.se.read(iprot)
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -373,7 +370,7 @@ class UploadUrls_result(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -475,7 +472,7 @@ class GetExtendedUrls_args(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -513,24 +510,18 @@ class GetExtendedUrls_result(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 0:
-                if ftype == TType.LIST:
-                    self.success = []
-                    (_etype385, _size382) = iprot.readListBegin()
-                    for _i386 in range(_size382):
-                        _elem387 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                        self.success.append(_elem387)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 1:
-                if ftype == TType.STRUCT:
-                    self.se = ServiceException()
-                    self.se.read(iprot)
-                else:
-                    iprot.skip(ftype)
-            else:
+            if fid == 0 and ftype == TType.LIST:
+                self.success = []
+                (_etype385, _size382) = iprot.readListBegin()
+                for _i386 in range(_size382):
+                    _elem387 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                    self.success.append(_elem387)
+                iprot.readListEnd()
+            elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
                 iprot.skip(ftype)
+            else:
+                self.se = ServiceException()
+                self.se.read(iprot)
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -559,7 +550,7 @@ class GetExtendedUrls_result(object):
     def __repr__(self):
         L = ['%s=%r' % (key, value)
              for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+        return f"{self.__class__.__name__}({', '.join(L)})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__

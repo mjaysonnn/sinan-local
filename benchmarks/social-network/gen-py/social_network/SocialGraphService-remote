@@ -21,7 +21,9 @@ from social_network.ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('')
-    print('Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] [-novalidate] [-ca_certs certs] [-keyfile keyfile] [-certfile certfile] function [arg1 [arg2...]]')
+    print(
+        f'Usage: {sys.argv[0]} [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] [-novalidate] [-ca_certs certs] [-keyfile keyfile] [-certfile certfile] function [arg1 [arg2...]]'
+    )
     print('')
     print('Functions:')
     print('   GetFollowers(i64 req_id, i64 user_id,  carrier)')
@@ -58,21 +60,18 @@ if sys.argv[argi] == '-u':
     url = urlparse(sys.argv[argi + 1])
     parts = url[1].split(':')
     host = parts[0]
-    if len(parts) > 1:
-        port = int(parts[1])
-    else:
-        port = 80
+    port = int(parts[1]) if len(parts) > 1 else 80
     uri = url[2]
     if url[4]:
-        uri += '?%s' % url[4]
+        uri += f'?{url[4]}'
     http = True
     argi += 2
 
-if sys.argv[argi] == '-f' or sys.argv[argi] == '-framed':
+if sys.argv[argi] in ['-f', '-framed']:
     framed = True
     argi += 1
 
-if sys.argv[argi] == '-s' or sys.argv[argi] == '-ssl':
+if sys.argv[argi] in ['-s', '-ssl']:
     ssl = True
     argi += 1
 
@@ -110,29 +109,11 @@ protocol = TBinaryProtocol(transport)
 client = SocialGraphService.Client(protocol)
 transport.open()
 
-if cmd == 'GetFollowers':
-    if len(args) != 3:
-        print('GetFollowers requires 3 args')
-        sys.exit(1)
-    pp.pprint(client.GetFollowers(eval(args[0]), eval(args[1]), eval(args[2]),))
-
-elif cmd == 'GetFollowees':
-    if len(args) != 3:
-        print('GetFollowees requires 3 args')
-        sys.exit(1)
-    pp.pprint(client.GetFollowees(eval(args[0]), eval(args[1]), eval(args[2]),))
-
-elif cmd == 'Follow':
+if cmd == 'Follow':
     if len(args) != 4:
         print('Follow requires 4 args')
         sys.exit(1)
     pp.pprint(client.Follow(eval(args[0]), eval(args[1]), eval(args[2]), eval(args[3]),))
-
-elif cmd == 'Unfollow':
-    if len(args) != 4:
-        print('Unfollow requires 4 args')
-        sys.exit(1)
-    pp.pprint(client.Unfollow(eval(args[0]), eval(args[1]), eval(args[2]), eval(args[3]),))
 
 elif cmd == 'FollowWithUsername':
     if len(args) != 4:
@@ -140,11 +121,17 @@ elif cmd == 'FollowWithUsername':
         sys.exit(1)
     pp.pprint(client.FollowWithUsername(eval(args[0]), args[1], args[2], eval(args[3]),))
 
-elif cmd == 'UnfollowWithUsername':
-    if len(args) != 4:
-        print('UnfollowWithUsername requires 4 args')
+elif cmd == 'GetFollowees':
+    if len(args) != 3:
+        print('GetFollowees requires 3 args')
         sys.exit(1)
-    pp.pprint(client.UnfollowWithUsername(eval(args[0]), args[1], args[2], eval(args[3]),))
+    pp.pprint(client.GetFollowees(eval(args[0]), eval(args[1]), eval(args[2]),))
+
+elif cmd == 'GetFollowers':
+    if len(args) != 3:
+        print('GetFollowers requires 3 args')
+        sys.exit(1)
+    pp.pprint(client.GetFollowers(eval(args[0]), eval(args[1]), eval(args[2]),))
 
 elif cmd == 'InsertUser':
     if len(args) != 3:
@@ -152,8 +139,20 @@ elif cmd == 'InsertUser':
         sys.exit(1)
     pp.pprint(client.InsertUser(eval(args[0]), eval(args[1]), eval(args[2]),))
 
+elif cmd == 'Unfollow':
+    if len(args) != 4:
+        print('Unfollow requires 4 args')
+        sys.exit(1)
+    pp.pprint(client.Unfollow(eval(args[0]), eval(args[1]), eval(args[2]), eval(args[3]),))
+
+elif cmd == 'UnfollowWithUsername':
+    if len(args) != 4:
+        print('UnfollowWithUsername requires 4 args')
+        sys.exit(1)
+    pp.pprint(client.UnfollowWithUsername(eval(args[0]), args[1], args[2], eval(args[3]),))
+
 else:
-    print('Unrecognized method %s' % cmd)
+    print(f'Unrecognized method {cmd}')
     sys.exit(1)
 
 transport.close()
